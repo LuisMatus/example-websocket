@@ -1,0 +1,30 @@
+doctype html
+html(lang="es" )
+	head
+		
+		meta(charset="utf-8")
+		meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
+		meta( name="csrf-token" content="")
+
+	//Google analytics
+	//
+		title #{title}
+		meta( name="title" content=title)
+		meta( name="dc.title" content=title)
+		meta( property="og:title" content=title)
+		
+		meta( property="og:site_name"   content=site_name)
+		meta( property="og:url"  		content=url_page)
+		meta( property="og:description" content=description)
+		meta( name="Description"        content=description)
+		meta( property="og:type" 		content="website")
+		meta( property="og:image" 		content="http://104.238.73.77:8081/public/img/sucursales/GOZ_logo.png")
+		meta( name="Keywords" 			content=keywords)
+	body
+		//Google Tag Manager (noscript
+		//End Google Tag Manager (noscript)
+		div#app
+			header-component
+			block contenido
+			footer-component() 
+		script(src="/public/js/bundle.js")

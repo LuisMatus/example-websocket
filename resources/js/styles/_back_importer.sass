@@ -1,0 +1,25 @@
+
+//colors btn, colors componets
+/*
+ @import './styleguide/colors.sass';
+ */
+
+@import '~vuetify/dist/vuetify.min.css';
+// Bootstrap.js
+//@import '~bootstrap/scss/bootstrap';
+
+// Styleguide  (Sass mixins/variables only, no global selectors)
+@import './styleguide/index';
+
+// Overall layout  (contains global selectors)
+@import 'bootstrap-overrides.sass';
+@import 'layout.scss';
+
+// Per-component styles
+@import './components/header';
+@import './components/footer';
+@import './components/button-green';
+
+
+// Per-page styles
+@import './pages/home.sass';
