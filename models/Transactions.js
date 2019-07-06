@@ -4,9 +4,9 @@ var transactions = mongoose.Schema({
 
 	ID_TRASACCION: { type: String, required: true, unique: true },
 	FECHA: String,
-	ID_CLIENTE: String,
+	ID_CLIENTE: { type: String, required: true, unique: true },
 
-	ID_ARTICULO: String,
+	ID_ARTICULO: { type: String, required: true},
 	CANTIDAD: String,
 
 	COSTO: String,
@@ -17,6 +17,6 @@ var transactions = mongoose.Schema({
 
 });
 
-var Transactions = mongoose.model('Transactions', transactions);
+var Transactions = mongoose.model('Transaccions', transactions);
 
 module.exports = Transactions;

@@ -1,9 +1,13 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/get-data', function (req, res) {
+//var generalesModel = require('../models/Transactions');
+//var query = generalesModel.find({});
 
-	res.send('api v1');
+router.post('/get-data', function (req, res) {
+
+	console.log("matus");
+	return res.json({ 'status': "success", 'transactions': res.locals.transactions });
 });
 
 

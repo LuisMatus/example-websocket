@@ -8,7 +8,7 @@ var middleware_routes 	= require('./middlewares/middle_transactions.js');
 
 //DB
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://sails:123456@localhost:27017/api_google');
+mongoose.connect('mongodb://root:5m20BX0Uz5@localhost:27017/coppel');
 
 // Public Dir
 app.use(express.static(path.join(__dirname, '/public')));
@@ -22,10 +22,8 @@ app.get('/', function (req, res) {
 	res.render('general/home');
 });
 
-
-app.use('/api/v1', api_routes);
 app.use('/api/v1', middleware_routes);
-
+app.use('/api/v1', api_routes);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 

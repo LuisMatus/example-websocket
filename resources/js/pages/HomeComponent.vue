@@ -39,7 +39,7 @@
 							
 
 
-					v-data-table( :headers="headers"  :items="correos" class="elevation-1")
+					v-data-table( :headers="headers"  :items="transactions" class="elevation-1")
 						template( v-slot:items="props")
 							td {{ props.item.type }}</td>
 							td( class="text-xs-left") {{ props.item.agency }} 
@@ -74,7 +74,7 @@
 					
 					{ text: 'Actions', value: 'name', sortable: false }
 				],
-				desserts: [],
+				//desserts: [],
 				editedIndex: -1,
 				editedItem: {
 					agency:	'',
@@ -92,7 +92,7 @@
 					status:	'',
 					type:	'',
 				},
-				correos :[]
+				transactions :[]
 				//matus
 			}
 
@@ -111,17 +111,18 @@
 
 		created () {
 
-			this.initialize();
-			//this.fetchCorreos();
+			//this.initialize();
+			this.fetchData();
 		},
 
 		methods: {
 
-			fetchCorreos(){
-				Axios.post('/dashboard/seguimiento')
+			fetchData(){
+				Axios.post('/api/v1/get-data')
 				.then( (response)=>{
 					// handle success
-					this.correos = response.data;
+					//this.correos = response.data;
+					console.log(response.data);
 					//this.reInit();
 				})
 				.catch(function (error) {
@@ -132,7 +133,7 @@
 					// always executed
 				});
 			},
-			updateCorreos(_id){
+			updateTransactions(_id){
 				Axios.put('/dashboard/seguimiento/'+_id)
 				.then( (response)=>{
 					// handle success
@@ -223,7 +224,7 @@
 
 			showData (item) {
 				console.log(item)
-				this.editedIndex = this.correos.indexOf(item)
+				this.editedIndex = this.transactions.indexOf(item)
 				this.editedItem = Object.assign({}, item)
 				this.dialog = true
 			},
@@ -231,11 +232,11 @@
 			deleteItem (item) {
 
 
-				const index = this.correos.indexOf(item)
+				const index = this.transactions.indexOf(item)
 				let status= confirm('Are you sure you want to delete this item?')
 				if(status){
-					this.correos.splice(index, 1); 
-					this.updateCorreos(item._id);
+					this.transactions.splice(index, 1); 
+					this.updateTransactions(item._id);
 
 				} 
 			},
