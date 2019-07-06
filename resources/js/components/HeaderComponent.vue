@@ -1,5 +1,6 @@
 <template>
   <div>
+		<!--
 		<v-navigation-drawer
 			v-model="drawer"
 			absolute
@@ -36,20 +37,21 @@
 				</v-list-tile>
 			</v-list>
 		</v-navigation-drawer>
-
+		-->
 		<v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="blue darken-3" dark app fixed>
 			<v-toolbar-title style="width: 300px" class="ml-0 pl-3">
-				<v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+				<!--<v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>-->
 				<span class="hidden-sm-and-down">Transaccions</span>
 			</v-toolbar-title>
 
 			<v-spacer></v-spacer>
-			<v-btn icon>
+			<!--<v-btn icon>
 				<v-icon>apps</v-icon>
 			</v-btn>
 			<v-btn icon>
 				<v-icon>notifications</v-icon>
 			</v-btn>
+			-->
 			<v-btn icon large>
 				<v-avatar size="32px" tile>
 					<img src="https://cdn.vuetifyjs.com/images/logos/logo.svg" alt="Vuetify">
