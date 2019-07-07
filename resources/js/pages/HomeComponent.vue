@@ -1,5 +1,5 @@
 <template lang="pug">
-	.secction-home(data-app)
+	.secction-home
 		v-container( grid-list-md text-xs-center)
 			v-layout( row wrap)
 				v-flex( xs12)
@@ -15,31 +15,40 @@
 							//<v-btn color="primary" dark class="mb-2" v-on="on">New Item</v-btn>
 							v-card
 								v-card-title
-									span( class="headline") {{ formTitle }}
-							v-card-text
-								v-container( grid-list-md)
-									v-layout(wrap)
-										v-flex( xs12 sm6)
-											v-text-field( v-model="editedItem.cliente.name" label="Nombre")
+									span( class="headline") Edit  {{ editedItem.ID_TRASACCION }}
+								v-card-text
+									v-container( grid-list-md)
+										v-layout(wrap)
+											//v-flex( xs12 sm6)
+												v-text-field( v-model="editedItem.ID_TRASACCION" label="ID_TRASACCION")
+									
+											v-flex( xs12 sm6 )
+												v-text-field( v-model="editedItem.ID_CLIENTE" label="ID_CLIENTE")
+											
+											v-flex( xs12 sm6 md4)
+												v-text-field( v-model="editedItem.ID_ARTICULO" label="ID_ARTICULO")
+											v-flex( xs12 sm6 md4)
+												v-text-field( v-model="editedItem.PRECIO" label="PRECIO")
+											v-flex( xs12 sm6 md4)
+												v-text-field( v-model="editedItem.CANTIDAD" label="CANTIDAD")
+											v-flex( xs12 sm6 md4)
+												v-text-field( v-model="editedItem.COSTO" label="COSTO")
+											v-flex( xs12 sm6 md4)
+												v-text-field( v-model="editedItem.FECHA" label="FECHA")
+
+										
+											
 								
-										v-flex( xs12 sm6 )
-											v-text-field( v-model="editedItem.cliente.email" label="Email")
-										
-										v-flex( xs12 sm6 md4)
-										<v-text-field( v-model="editedItem.cliente.tel" label="Tel")
 
-										v-card-text( v-for="(item, key) in editedItem.info_form")
-											<p><b>{{key+': '}}</b> {{item}}</p>
-										
-							
+									v-card-actions
+										v-spacer
+										v-btn( color="blue darken-1" flat @click="close") Cancel 
+										v-btn( color="blue darken-1" flat @click="save") Save
 
-							v-card-actions
-								v-spacer
-								v-btn( color="blue darken-1" flat @click="close") Cancel
-							
+								
 
 
-					v-data-table( :headers="headers"  :items="transactions" class="elevation-1")
+					v-data-table( :headers="headers"  :items="transactions" :rowsPerPageItems="rowsPerPage" class="elevation-1")
 						template( v-slot:items="props")
 							td( class="text-xs-left") {{ props.item.ID_TRASACCION }} 
 							td( class="text-xs-left") {{ props.item.ID_CLIENTE }} 
@@ -49,9 +58,9 @@
 							td( class="text-xs-left") {{ props.item.COSTO }}
 							td( class="text-xs-left") {{ props.item.FECHA }}
 
-							td( class="justify-cente)  layout px-0")
-								v-icon( medium class="mr-2 md-18 "   @click="showData(props.item)") remove_red_eye
-								v-icon(  medium				 @click="deleteItem(props.item)") archive
+							td( class="justify-center  layout px-0")
+								v-icon( medium class="mr-2 md-18 "   @click="showData(props.item)") edit
+								//v-icon(  medium				 @click="deleteItem(props.item)") delete
 		
 </template>
 
@@ -63,37 +72,43 @@
 			return {
 				dialog: false,
 				headers: [
-					{ text: 'ID_TRASACCION ', value: ''},
-					{ text: 'ID_CLIENTE ', 		value: '' },
-					{ text: 'ID_ARTICULO', value: '' },
-					{ text: 'PRECIO', value: '' },
+					{ text: 'ID_TRASACCION ', value: '', sortable: false },
+					{ text: 'ID_CLIENTE ', 		value: '', sortable: false  },
+					{ text: 'ID_ARTICULO', value: '', sortable: false  },
+					{ text: 'PRECIO', value: '', sortable: false  },
 					{ text: 'CANTIDAD', value: 'name', sortable: false },
-					{ text: 'COSTO', value: 'name', sortable: false },
-					{ text: 'FECHA ',  		value: '' }	
+					{ text: 'COSTO', value: 'name',sortable: false },
+					{ text: 'FECHA ',  		value: '',  sortable: false},
+					{text: 'Actions', value: 'name', sortable: false}
 				],
 				//desserts: [],
 				editedIndex: -1,
 				editedItem: {
-					agency:	'',
-					cliente:	{},
-					email_agency:	'',
-					info_form:	'',
-					status:	'',
-					type:	'',
+					ID_TRASACCION:	'',
+					ID_CLIENTE:	'',
+					ID_ARTICULO:	'',
+					PRECIO:	'',
+					CANTIDAD:	'',
+					COSTO:	'',
+					FECHA:	'',
+
 				},
 				defaultItem: {
-					agency:	'',
-					cliente:	{},
-					email_agency:	'',
-					info_form:	'',
-					status:	'',
-					type:	'',
+					ID_TRASACCION:	'',
+					ID_CLIENTE: '',
+					ID_ARTICULO:	'',
+					PRECIO:	'',
+					CANTIDAD:	'',
+					COSTO:	'',
+					FECHA:	'',
 				},
-				transactions :[]
+				transactions :[],
+				rowsPerPage: [50, 500,1000],
 				//matus
 			}
 
 		},
+		
 		computed: {
 			formTitle () {
 				return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
@@ -108,7 +123,6 @@
 
 		created () {
 
-			//this.initialize();
 			this.fetchData();
 		},
 
@@ -144,89 +158,13 @@
 					// always executed
 				});
 			},
-			initialize () {
-				this.desserts = [
-					{
-						name: 'Frozen Yogurt',
-						calories: 159,
-						fat: 6.0,
-						carbs: 24,
-						protein: 4.0
-					},
-					{
-						name: 'Ice cream sandwich',
-						calories: 237,
-						fat: 9.0,
-						carbs: 37,
-						protein: 4.3
-					},
-					{
-						name: 'Eclair',
-						calories: 262,
-						fat: 16.0,
-						carbs: 23,
-						protein: 6.0
-					},
-					{
-						name: 'Cupcake',
-						calories: 305,
-						fat: 3.7,
-						carbs: 67,
-						protein: 4.3
-					},
-					{
-						name: 'Gingerbread',
-						calories: 356,
-						fat: 16.0,
-						carbs: 49,
-						protein: 3.9
-					},
-					{
-						name: 'Jelly bean',
-						calories: 375,
-						fat: 0.0,
-						carbs: 94,
-						protein: 0.0
-					},
-					{
-						name: 'Lollipop',
-						calories: 392,
-						fat: 0.2,
-						carbs: 98,
-						protein: 0
-					},
-					{
-						name: 'Honeycomb',
-						calories: 408,
-						fat: 3.2,
-						carbs: 87,
-						protein: 6.5
-					},
-					{
-						name: 'Donut',
-						calories: 452,
-						fat: 25.0,
-						carbs: 51,
-						protein: 4.9
-					},
-					{
-						name: 'KitKat',
-						calories: 518,
-						fat: 26.0,
-						carbs: 65,
-						protein: 7
-					}
-				];
-			},
-
 			showData (item) {
-				console.log(item)
 				this.editedIndex = this.transactions.indexOf(item)
 				this.editedItem = Object.assign({}, item)
 				this.dialog = true
 			},
 
-			deleteItem (item) {
+			/*deleteItem (item) {
 
 
 				const index = this.transactions.indexOf(item)
@@ -236,7 +174,7 @@
 					this.updateTransactions(item._id);
 
 				} 
-			},
+			},*/
 
 			close () {
 				this.dialog = false;
@@ -247,11 +185,11 @@
 			},
 
 			save () {
-				/*if (this.editedIndex > -1) {
-				Object.assign(this.correos[this.editedIndex], this.editedItem)
+				if (this.editedIndex > -1) {
+				Object.assign(this.transactions[this.editedIndex], this.editedItem)
 				} else {
-				this.correos.push(this.editedItem)
-				}*/
+				this.transactions.push(this.editedItem)
+				}
 				this.close()
 			}
 		}

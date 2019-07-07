@@ -22,7 +22,7 @@ app.get('/', function (req, res) {
 	res.render('general/home');
 });
 
-app.use('/api/v1', middleware_routes);
+//app.use('/api/v1', middleware_routes);
 app.use('/api/v1', api_routes);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
