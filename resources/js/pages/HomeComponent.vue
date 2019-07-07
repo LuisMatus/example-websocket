@@ -41,11 +41,14 @@
 
 					v-data-table( :headers="headers"  :items="transactions" class="elevation-1")
 						template( v-slot:items="props")
-							td {{ props.item.type }}</td>
-							td( class="text-xs-left") {{ props.item.agency }} 
-							td( class="text-xs-left") {{ props.item.email_agency }} 
-							td( class="text-xs-left") {{ props.item.agency }} 
-							td( class="text-xs-left") {{ props.item.cliente.email }} 
+							td( class="text-xs-left") {{ props.item.ID_TRASACCION }} 
+							td( class="text-xs-left") {{ props.item.ID_CLIENTE }} 
+							td( class="text-xs-left") {{ props.item.ID_ARTICULO }} 
+							td( class="text-xs-left") {{ props.item.PRECIO }} 
+							td( class="text-xs-left") {{ props.item.CANTIDAD }} 
+							td( class="text-xs-left") {{ props.item.COSTO }}
+							td( class="text-xs-left") {{ props.item.FECHA }}
+
 							td( class="justify-cente)  layout px-0")
 								v-icon( medium class="mr-2 md-18 "   @click="showData(props.item)") remove_red_eye
 								v-icon(  medium				 @click="deleteItem(props.item)") archive
@@ -60,19 +63,13 @@
 			return {
 				dialog: false,
 				headers: [
-					{
-						text: 'Departamento ',
-						align: 'left',
-						sortable: false,
-						value: ''
-					},
-					{ text: 'Agencia ', 		value: '' },
-					{ text: 'Email de Agencia', value: '' },
-					{ text: 'Email Consumidor', value: '' },
-					
-					{ text: 'Status ',  		value: '' },
-					
-					{ text: 'Actions', value: 'name', sortable: false }
+					{ text: 'ID_TRASACCION ', value: ''},
+					{ text: 'ID_CLIENTE ', 		value: '' },
+					{ text: 'ID_ARTICULO', value: '' },
+					{ text: 'PRECIO', value: '' },
+					{ text: 'CANTIDAD', value: 'name', sortable: false },
+					{ text: 'COSTO', value: 'name', sortable: false },
+					{ text: 'FECHA ',  		value: '' }	
 				],
 				//desserts: [],
 				editedIndex: -1,
@@ -121,7 +118,7 @@
 				Axios.post('/api/v1/get-data')
 				.then( (response)=>{
 					// handle success
-					//this.correos = response.data;
+					this.transactions = response.data.transactions;
 					console.log(response.data);
 					//this.reInit();
 				})

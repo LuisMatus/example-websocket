@@ -2,7 +2,7 @@ var transactionsModel = require("../models/Transactions.js");
 
 module.exports = function (req, res, next) {
 
-	transactionsModel.find({})
+	transactionsModel.find({},{_id:0})
 		.exec(function (err, transactions) {
 			res.locals.transactions = transactions;
 			next(); 

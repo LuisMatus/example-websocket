@@ -5,7 +5,6 @@ var router = express.Router();
 //var query = generalesModel.find({});
 
 router.post('/get-data', function (req, res) {
-
 	console.log("matus");
 	return res.json({ 'status': "success", 'transactions': res.locals.transactions });
 });
