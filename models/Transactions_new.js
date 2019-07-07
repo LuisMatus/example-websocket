@@ -17,6 +17,6 @@ var transactions = mongoose.Schema({
 
 });
 
-var Transactions = mongoose.model('Transactions', transactions);
+var Transactions = mongoose.model('Transactions2', transactions);
 
 module.exports = Transactions;

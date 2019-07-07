@@ -4,6 +4,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import vue from 'vue';
 import VueRouter from 'vue-router';
 import Vuetify from 'vuetify';
+
 let css = require("./styles/importer.sass");
 
 
@@ -31,16 +32,17 @@ import FooterComponent from './components/FooterComponent.vue';
 
 
 import HomeComponent from './pages/HomeComponent.vue';
-
+import ChartsComponent from './pages/ChartsComponent.vue'
+/*
 const routes = [
 	{ path: '/', name: 'home', component: HomeComponent },
-];
+];*/
 
 
 // 3. Create the router instance and pass the `routes` option
 const router = new VueRouter({
 	mode: 'history',
-	routes: routes,
+	//routes: routes,
 	scrollBehavior(to, from, savedPosition) {
 		if (savedPosition) {
 			return savedPosition
@@ -56,6 +58,8 @@ const app = new Vue({
 	router: router,
 	components: {
 		'header-component': Headercomponent,
-		'footer-component': FooterComponent
+		'footer-component': FooterComponent,
+		'home-component': HomeComponent,
+		'charts-component': ChartsComponent
 	}
 });

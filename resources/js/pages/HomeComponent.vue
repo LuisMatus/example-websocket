@@ -3,7 +3,7 @@
 		v-container( grid-list-md text-xs-center)
 			v-layout( row wrap)
 				v-flex( xs12)
-					h1.primary Update Transaccions
+					h1 Update Transaccions
 
 					v-toolbar( flat color="white")
 						v-toolbar-title Transaccions
@@ -133,7 +133,7 @@
 				.then( (response)=>{
 					// handle success
 					this.transactions = response.data.transactions;
-					console.log(response.data);
+					//console.log(response.data);
 					//this.reInit();
 				})
 				.catch(function (error) {
