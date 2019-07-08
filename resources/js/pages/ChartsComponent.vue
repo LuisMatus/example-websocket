@@ -111,7 +111,7 @@
 				val || this.close()
 			}
 		},
-		methods: {
+		methods: { 
 
 			async updateChart(){
 				Axios.post('/api/v1/charts')
