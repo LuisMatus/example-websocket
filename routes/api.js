@@ -42,6 +42,8 @@ router.post('/charts', async function (req, res) {
 			$match: { $and: [{ FECHA: { $gte: new Date('2019-01-01') } }, { FECHA: { $lte: new Date('2019-01-02') } }] },
 	},*/
 	var data_chart = await transactions_newModel.aggregate([
+		{ $sort: { FECHA: -1 } },
+		{ $limit: 10 },
 		{ 
 			$group: {
 				_id: '$FECHA',
@@ -53,9 +55,8 @@ router.post('/charts', async function (req, res) {
 				}
 			}
 		}
+		
 	])
-	.sort({ FECHA: -1 })
-	.limit(40)
 	.exec();
 
 	var serie_costo = await data_chart.map((item)=>{
