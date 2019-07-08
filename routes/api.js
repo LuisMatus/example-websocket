@@ -42,10 +42,6 @@ router.post('/charts', async function (req, res) {
 			$match: { $and: [{ FECHA: { $gte: new Date('2019-01-01') } }, { FECHA: { $lte: new Date('2019-01-02') } }] },
 	},*/
 	var data_chart = await transactions_newModel.aggregate([
-	
-		{
-			$match: { FECHA: { $gte: new Date('2020-5-01') }   },
-		},
 		{ 
 			$group: {
 				_id: '$FECHA',
@@ -57,7 +53,10 @@ router.post('/charts', async function (req, res) {
 				}
 			}
 		}
-	]).exec();
+	])
+	.sort({ FECHA: -1 })
+	.limit(40)
+	.exec();
 
 	var serie_costo = await data_chart.map((item)=>{
 
@@ -70,7 +69,7 @@ router.post('/charts', async function (req, res) {
 
 	return res.json({ 'status': "success", 'fechas': fechas, 'costo': serie_costo, 'precio': precio  });
 });
-
+/*
 router.get('/convertir', function (req, res) {
 
 	transactionsModel.
@@ -97,6 +96,7 @@ router.get('/convertir', function (req, res) {
 
 	return res.json({ 'status': "success", 'transactions': res.locals.transactions });
 });
+*/
 
 
 
