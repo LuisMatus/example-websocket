@@ -4,22 +4,28 @@
 			v-layout( row wrap)
 				v-flex( xs12)
 					h1(class="primary--text") Charts 
-					div#chart
+					//div#chart
+				v-flex( xs12 md10 mx-auto)
+					apexchart( type='line' width="100%" :options="options" :series="series" )
 </template>
 
 
 
 <script>
 	var Axios = require('axios');
-	import ApexCharts from 'apexcharts';
+
+	import VueApexCharts from "vue-apexcharts";
+	import ApexCharts from "apexcharts";
 
 	export default {
-
+		components: {
+       		apexchart: VueApexCharts,
+    	},
 		data(){
 			return {
 				options : {
 					chart: {
-						height: 350,
+						id: "chart1",
 						type: 'line',
 						shadow: {
 							enabled: true,
@@ -40,15 +46,7 @@
 					stroke: {
 						curve: 'smooth'
 					},
-					series: [{
-							name: "Suma de Costo ",
-							data: []
-						},
-						{
-							name: "Suma de Precio ",
-							data: []
-						}
-					],
+					
 					title: {
 						text: 'Costos & Precio',
 						align: 'left'
@@ -86,6 +84,15 @@
 						offsetX: -5
 					}
 				},
+				series: [{
+							name: "Suma de Costo ",
+							data: []
+						},
+						{
+							name: "Suma de Precio ",
+							data: []
+						}
+				]
 			}
 		},
 		sockets:{
@@ -99,22 +106,38 @@
 		mounted() {
 			this.fetchData();
 		},
+		watch: {
+			dialog (val) {
+				val || this.close()
+			}
+		},
 		methods: {
 
-			updateChart(){
+			async updateChart(){
 				Axios.post('/api/v1/charts')
 				.then( (response)=>{
 
-					console.log('reset');
-					
 					this.options.xaxis.categories = response.data.fechas;
-					this.options.series[0].data = response.data.costo;
-					this.options.series[1].data = response.data.precio;
 					
-					var chart = new ApexCharts(document.querySelector("#chart"),this.options);
-					
-					chart.updateSeries(this.options.series[0].data);
-					chart.updateSeries(this.options.series[1].data);
+					this.series[0].data = response.data.costo;
+					this.series[1].data = response.data.precio;
+
+				
+					ApexCharts.exec("chart1", "updateOptions", {
+						xaxis: {
+							categories: this.options.xaxis.categories 
+						}
+					});
+
+					ApexCharts.exec("chart1", "updateSeries", [
+						{
+							data: this.series[0].data
+						},
+						{
+							data: this.series[2].data
+						}
+
+					]);
 					
 
 				})
@@ -133,13 +156,27 @@
 				.then( (response)=>{
 					// handle success
 					//this.transactions = response.data.transactions;
-					console.log(this.options.series[0].data);
 					this.options.xaxis.categories = response.data.fechas;
-					this.options.series[0].data = response.data.costo;
-					this.options.series[1].data = response.data.precio;
+					
+					this.series[0].data = response.data.costo;
+					this.series[1].data = response.data.precio;
 
-					var chart = new ApexCharts(document.querySelector("#chart"), this.options);
-					chart.render();
+				
+					ApexCharts.exec("chart1", "updateOptions", {
+						xaxis: {
+							categories: this.options.xaxis.categories 
+						}
+					});
+
+					ApexCharts.exec("chart1", "updateSeries", [
+						{
+							data: this.series[0].data
+						},
+						{
+							data: this.series[2].data
+						}
+
+					]);
 				})
 				.catch(function (error) {
 					// handle error
