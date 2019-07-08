@@ -30,7 +30,7 @@
 												v-text-field( v-model="editedItem.CANTIDAD" label="CANTIDAD")
 											v-flex( xs12 sm6 md4)
 												v-text-field( v-model="editedItem.COSTO" label="COSTO")
-											v-flex( xs12 sm6 md4)
+											//v-flex( xs12 sm6 md4)
 												v-date-picker( v-model="editedItem.FECHA"  label="FECHA")
 								
 
@@ -61,6 +61,9 @@
 
 <script>
 	var Axios = require('axios');
+	
+
+
 	export default {
 		data(){
 			return {
@@ -101,23 +104,21 @@
 				//matus
 			}
 
-		},
-		
+		},	
 		computed: {
 			formTitle () {
 				return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
 			}
+		},
+		created () {
+
+			this.fetchData();
 		},
 
 		watch: {
 			dialog (val) {
 				val || this.close()
 			}
-		},
-
-		created () {
-
-			this.fetchData();
 		},
 
 		methods: {

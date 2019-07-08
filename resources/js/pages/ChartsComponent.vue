@@ -12,6 +12,7 @@
 <script>
 	var Axios = require('axios');
 	import ApexCharts from 'apexcharts';
+
 	export default {
 
 		data(){
@@ -84,13 +85,48 @@
 						offsetY: -25,
 						offsetX: -5
 					}
-				}
+				},
+			}
+		},
+		sockets:{
+			connection: function(){
+				console.log('socket connected')
+			},
+			charts: function(){
+				this.updateChart();
 			}
 		},
 		mounted() {
 			this.fetchData();
 		},
 		methods: {
+
+			updateChart(){
+				Axios.post('/api/v1/charts')
+				.then( (response)=>{
+
+					console.log('reset');
+					
+					this.options.xaxis.categories = response.data.fechas;
+					this.options.series[0].data = response.data.costo;
+					this.options.series[1].data = response.data.precio;
+					
+					var chart = new ApexCharts(document.querySelector("#chart"),this.options);
+					
+					chart.updateSeries(this.options.series[0].data);
+					chart.updateSeries(this.options.series[1].data);
+					
+
+				})
+				.catch(function (error) {
+					// handle error
+					//console.log(error);
+				})
+				.then(function () {
+					// always executed
+				});
+
+			},
 
 			fetchData(){
 				Axios.post('/api/v1/charts')
@@ -104,7 +140,6 @@
 
 					var chart = new ApexCharts(document.querySelector("#chart"), this.options);
 					chart.render();
-
 				})
 				.catch(function (error) {
 					// handle error
@@ -114,6 +149,7 @@
 					// always executed
 				});
 			},
+
 		}
 		
 	}

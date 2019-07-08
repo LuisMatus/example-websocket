@@ -3,16 +3,12 @@ var path = require('path');
 var cookieParser 	= require('cookie-parser');
 var bodyParser 		= require('body-parser');
 const app = express();
-const port = 5000
-
-
-//webSocket
-var server = require('http').Server(express);
-var io = require('socket.io')(server);
+const port = 5000;
 
 // routes 
 var api_routes 			= require('./routes/api.js');
 var middleware_routes 	= require('./middlewares/middle_transactions.js');
+
 
 //DB
 var mongoose = require('mongoose');
@@ -33,16 +29,29 @@ app.set('view engine', 'pug');
 app.get('/', function (req, res) {
 	res.render('general/home');
 });
-
+// route API
 app.use('/api/v1', middleware_routes);
 app.use('/api/v1', api_routes);
 
 
-app.listen(port)
 
+
+app.start = function () {
+	// start the web server
+	return app.listen(5000, "127.0.0.1")
+};
+
+
+var io = require("socket.io")(app.start());
+app.io = io;
 io.on('connection', function (socket) {
-	socket.emit('news', { hello: 'world' });
-	socket.on('my other event', function (data) {
-		console.log(data);
-	});
+	console.log('a user connected server');
+	socket.emit('connection');
+	//socket.emit('charts');
 });
+
+
+/*app.listen(port, function(){
+	console.log('listening on *:5000');
+});*/
+

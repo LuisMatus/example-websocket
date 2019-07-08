@@ -4,6 +4,8 @@ var router = express.Router();
 var transactionsModel = require("../models/Transactions.js");
 var transactions_newModel = require("../models/Transactions_new.js");
 
+var io = require('socket.io');
+
 router.post('/get-data', function (req, res) {
 	
 	return res.json({ 'status': "success", 'transactions': res.locals.transactions });
@@ -29,6 +31,7 @@ router.put('/transactions/:id', function (req, res) {
 		});
 
 	});
+	req.app.io.emit('charts');
 	return res.json({ 'status': "success" });
 
 });
@@ -43,7 +46,7 @@ router.post('/charts', async function (req, res) {
 	},*/
 	var data_chart = await transactions_newModel.aggregate([
 		{ $sort: { FECHA: -1 } },
-		{ $limit: 10 },
+		{ $limit: 20 },
 		{ 
 			$group: {
 				_id: '$FECHA',
@@ -58,10 +61,11 @@ router.post('/charts', async function (req, res) {
 		
 	])
 	.exec();
+	//console.log(data_chart);
 
 	var serie_costo = await data_chart.map((item)=>{
 
-		fechas.push(item._id.getFullYear() + '-' + item._id.getMonth() + '-' + item._id.getDate());
+		fechas.push(item._id.toISOString().substring(0, 10));
 		//costo.push(item.costoTotal);
 		precio.push(item.precioTotal);
 		return item.costoTotal;

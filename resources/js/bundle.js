@@ -5,34 +5,20 @@ import vue from 'vue';
 import VueRouter from 'vue-router';
 import Vuetify from 'vuetify';
 
-const io = require('socket.io-client');
-
-
 let css = require("./styles/importer.sass");
 
-
-// Helpers
-//import colors from 'vuetify/es5/util/colors'
 window.Vue = vue;
+
+import VueSocketIO from 'vue-socket.io'
+
+Vue.use(new VueSocketIO({
+	debug: true,
+	connection: 'http://127.0.0.1:5000/',
+	//options: { path: "/my-app/" } //Optional options
+}));
 
 Vue.use(VueRouter);
 Vue.use(Vuetify);
-
-var socket = io.connect('http://localhost:5000');
-socket.on('news', function (data) {
-	console.log(data);
-	socket.emit('my other event', { my: 'data' });
-});
-
-/*{
-	theme: {
-		primary: colors.red.darken1, // #E53935
-			secondary: colors.red.lighten4, // #FFCDD2
-				accent: colors.indigo.base // #3F51B5
-	},
-	iconfont: 'mdi'
-}
-*/
 
 
 
@@ -42,11 +28,6 @@ import FooterComponent from './components/FooterComponent.vue';
 
 import HomeComponent from './pages/HomeComponent.vue';
 import ChartsComponent from './pages/ChartsComponent.vue'
-/*
-const routes = [
-	{ path: '/', name: 'home', component: HomeComponent },
-];*/
-
 
 // 3. Create the router instance and pass the `routes` option
 const router = new VueRouter({
