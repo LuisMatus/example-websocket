@@ -1,7 +1,7 @@
 <template>
   <div>
-		<!--
-		<v-navigation-drawer
+		
+		<!--<v-navigation-drawer
 			v-model="drawer"
 			absolute
 			temporary>
@@ -30,14 +30,14 @@
 
 					<v-list-tile-content>
 						
-						<v-list-tile-title><a href="/categories"> {{ item.title }}</a></v-list-tile-title>
+						<v-list-tile-title>{{ item.title }}</v-list-tile-title>
 						
 					</v-list-tile-content>
 				
 				</v-list-tile>
 			</v-list>
-		</v-navigation-drawer>
-		-->
+		</v-navigation-drawer>-->
+	
 		<v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="blue darken-3" dark app fixed>
 			<v-toolbar-title style="width: 300px" class="ml-0 pl-3">
 				<!--<v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>-->
@@ -68,9 +68,8 @@
       dialog: false,
       drawer: null,
       items: [
-		{ title: 'Categorias',  icon: 'list_alt' },
-        { title: 'Home', icon: 'dashboard' },
-        { title: 'About', icon: 'question_answer' }
+		{ title: 'Charts',  icon: 'equalizer' },
+		{ title: 'csv',  icon: 'list_alt' },
       ]
     }),
     props: {

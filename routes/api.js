@@ -9,6 +9,30 @@ router.post('/get-data', function (req, res) {
 	return res.json({ 'status': "success", 'transactions': res.locals.transactions });
 });
 
+router.put('/transactions/:id', function (req, res) {
+
+	transactions_newModel.findOne({'ID_TRASACCION': req.params.id}, function (err, doc) {
+
+		if (err) return res.json({ 'status': "error" });
+
+
+		doc.FECHA 		= req.body.FECHA;
+		doc.ID_CLIENTE	 = req.body.ID_CLIENTE;
+		doc.ID_ARTICULO = req.body.ID_ARTICULO;
+		doc.CANTIDAD = req.body.CANTIDAD;
+		doc.COSTO = req.body.COSTO;
+		doc.PRECIO = req.body.PRECIO;
+
+
+		doc.save(function () {
+
+		});
+
+	});
+	return res.json({ 'status': "success" });
+
+});
+
 router.post('/charts', async function (req, res) {
 
 	var fechas = [];

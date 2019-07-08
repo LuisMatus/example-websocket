@@ -5,6 +5,9 @@ import vue from 'vue';
 import VueRouter from 'vue-router';
 import Vuetify from 'vuetify';
 
+const io = require('socket.io-client');
+
+
 let css = require("./styles/importer.sass");
 
 
@@ -14,6 +17,12 @@ window.Vue = vue;
 
 Vue.use(VueRouter);
 Vue.use(Vuetify);
+
+var socket = io.connect('http://localhost:3000');
+socket.on('news', function (data) {
+	console.log(data);
+	socket.emit('my other event', { my: 'data' });
+});
 
 /*{
 	theme: {

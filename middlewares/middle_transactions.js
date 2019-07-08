@@ -1,8 +1,9 @@
-var transactionsModel = require("../models/Transactions.js");
+var transactions_newModel = require("../models/Transactions_new.js");
 
 module.exports = function (req, res, next) {
 
-	transactionsModel.find({},{_id:0})
+	transactions_newModel.find({ FECHA: { $gte: new Date('2020-5-01')} },{_id:0})
+		.sort({ FECHA: -1 })
 		.exec(function (err, transactions) {
 			res.locals.transactions = transactions;
 			next(); 

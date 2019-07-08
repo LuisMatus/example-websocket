@@ -15,15 +15,12 @@
 							//<v-btn color="primary" dark class="mb-2" v-on="on">New Item</v-btn>
 							v-card
 								v-card-title
-									span( class="headline") Edit  {{ editedItem.ID_TRASACCION }}
+									span( class="headline") ID_TRASACCION  {{ editedItem.ID_TRASACCION }}
 								v-card-text
 									v-container( grid-list-md)
 										v-layout(wrap)
-											//v-flex( xs12 sm6)
-												v-text-field( v-model="editedItem.ID_TRASACCION" label="ID_TRASACCION")
-									
 											v-flex( xs12 sm6 )
-												v-text-field( v-model="editedItem.ID_CLIENTE" label="ID_CLIENTE")
+												p ID_CLIENTE:   {{editedItem.ID_CLIENTE}}
 											
 											v-flex( xs12 sm6 md4)
 												v-text-field( v-model="editedItem.ID_ARTICULO" label="ID_ARTICULO")
@@ -34,10 +31,7 @@
 											v-flex( xs12 sm6 md4)
 												v-text-field( v-model="editedItem.COSTO" label="COSTO")
 											v-flex( xs12 sm6 md4)
-												v-text-field( v-model="editedItem.FECHA" label="FECHA")
-
-										
-											
+												v-date-picker( v-model="editedItem.FECHA"  label="FECHA")
 								
 
 									v-card-actions
@@ -56,7 +50,7 @@
 							td( class="text-xs-left") {{ props.item.PRECIO }} 
 							td( class="text-xs-left") {{ props.item.CANTIDAD }} 
 							td( class="text-xs-left") {{ props.item.COSTO }}
-							td( class="text-xs-left") {{ props.item.FECHA }}
+							td( class="text-xs-left") {{ props.item.FECHA.substring(0, 10 ) }}  
 
 							td( class="justify-center  layout px-0")
 								v-icon( medium class="mr-2 md-18 "   @click="showData(props.item)") edit
@@ -179,18 +173,41 @@
 			close () {
 				this.dialog = false;
 				setTimeout(() => {
-					this.editedItem = Object.assign({}, this.defaultItem)
-					this.editedIndex = -1
+					this.editedItem = Object.assign({}, this.defaultItem);
+					this.editedIndex = -1;
 				}, 300)
 			},
 
 			save () {
 				if (this.editedIndex > -1) {
-				Object.assign(this.transactions[this.editedIndex], this.editedItem)
+					Object.assign(this.transactions[this.editedIndex], this.editedItem);
+				
+					this.saveData(this.editedItem);
 				} else {
-				this.transactions.push(this.editedItem)
+					this.transactions.push(this.editedItem)
 				}
+
 				this.close()
+			},
+			saveData(data){
+
+				console.log(data);
+
+				Axios.put('/api/v1/transactions/'+data.ID_TRASACCION, data)
+				.then( (response)=>{
+					// handle success
+					//this.transactions = response.data.transactions;
+					console.log(response.data);
+					//this.reInit();
+				})
+				.catch(function (error) {
+					// handle error
+					//console.log(error);
+				})
+				.then(function () {
+					// always executed
+				});
+
 			}
 		}
 	}
