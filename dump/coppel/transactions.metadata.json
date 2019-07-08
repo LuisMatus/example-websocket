@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"coppel.transactions"},{"v":2,"unique":true,"key":{"ID_TRASACCION":1},"name":"ID_TRASACCION_1","ns":"coppel.transactions","background":true}],"uuid":"4b720648ed0443b7a5e51d0153498397"}
