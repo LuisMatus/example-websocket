@@ -36,9 +36,9 @@ app.use('/api/v1', api_routes);
 
 
 
+var server = app.listen(5000, "127.0.0.1");
 
-
-var io = require("socket.io")(app.listen(5000, "127.0.0.1"));
+var io = require("socket.io")(server);
 app.io = io;
 io.on('connection', function (socket) {
 	console.log('a user connected server');
