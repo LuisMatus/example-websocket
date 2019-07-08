@@ -3,7 +3,7 @@ var path = require('path');
 var cookieParser 	= require('cookie-parser');
 var bodyParser 		= require('body-parser');
 const app = express();
-const port = 5000;
+const port = 3000;
 
 // routes 
 var api_routes 			= require('./routes/api.js');
@@ -36,7 +36,7 @@ app.use('/api/v1', api_routes);
 
 
 
-var server = app.listen(5000, "127.0.0.1");
+var server = app.listen(port, "127.0.0.1");
 
 var io = require("socket.io")(server);
 app.io = io;
