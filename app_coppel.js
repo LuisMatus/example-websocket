@@ -34,11 +34,14 @@ app.use('/api/v1', middleware_routes);
 app.use('/api/v1', api_routes);
 
 
+app.start = function () {
+	// start the web server
+	return app.listen(port, function () {
+		//app.emit('charts');
+	});
+};
 
-
-var server = app.listen(port, "127.0.0.1");
-
-var io = require("socket.io")(server);
+var io = require("socket.io")(app.start());
 app.io = io;
 io.on('connection', function (socket) {
 	console.log('a user connected server');
@@ -47,6 +50,3 @@ io.on('connection', function (socket) {
 });
 
 
-app.listen(port, function(){
-	console.log('listening on *:5000');
-});
