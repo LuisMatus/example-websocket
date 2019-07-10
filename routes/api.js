@@ -41,39 +41,72 @@ router.post('/charts', async function (req, res) {
 	var fechas = [];
 	var costo = [];
 	var precio = [];
-	/*{
-			$match: { $and: [{ FECHA: { $gte: new Date('2019-01-01') } }, { FECHA: { $lte: new Date('2019-01-02') } }] },
-	},*/
-	var data_chart = await transactions_newModel.aggregate([
+	var years = [];
+
+	var data_years =  await transactions_newModel.aggregate([
 		{ $sort: { FECHA: -1 } },
-		{ $limit: 20 },
-		{ 
+		{
 			$group: {
-				_id: '$FECHA',
-				costoTotal: {
-					$sum: '$COSTO'
-				},
-				precioTotal: {
-					$sum: '$PRECIO'
-				}
+				_id: {$year:"$FECHA"}
 			}
-		}
-		
-	])
-	.exec();
-	//console.log(data_chart);
+		},
+	]).exec();
+
+	years = await data_years.map((item) => { return item._id } );
+	var data_chart = await transactions_newModel.aggregate([
+		{ $project: { _id: 0 } },
+		{ $sort: { FECHA: 1 } },
+		{
+			$group: {
+				_id: {
+					year: { $year: "$FECHA" },
+					week: { $week: "$FECHA" }
+				},
+				costoTotal: { $sum: '$COSTO' },
+				precioTotal: { $sum: '$PRECIO' }
+			}
+		},
+		{ $sort: { _id: 1 } },
+	]).exec();
 
 	var serie_costo = await data_chart.map((item)=>{
-
-		fechas.push(item._id.toISOString().substring(0, 10));
-		//costo.push(item.costoTotal);
+		fechas.push(item._id);
+		//fechas.push(item._id.toISOString().substring(0, 10));
 		precio.push(item.precioTotal);
 		return item.costoTotal;
-
 	});
+	let json_response = { 
+		'status': "success", 
+		'fechas': fechas, 
+		'costo': serie_costo, 
+		'precio': precio,
+		'years': years
+	}
 
-	return res.json({ 'status': "success", 'fechas': fechas, 'costo': serie_costo, 'precio': precio  });
+	return res.json(json_response);
 });
+
+router.get('/charts-week', async function (req, res) {
+	var data_chart = await transactions_newModel.aggregate([
+		{ $project: { _id: 0 } }, 
+		{ $sort: { FECHA: 1 } }, 
+		{ 
+			$group:{ 
+				_id: { 
+					year: { $year: "$FECHA" } , 
+					week: { $week: "$FECHA" } 
+				},
+				costoTotal: { $sum: '$COSTO' },
+				precioTotal: { $sum: '$PRECIO' }
+			}
+		},
+		{ $sort: { _id: 1 } }, 
+	]).exec();
+
+	res.send(data_chart);
+});	
+
+
 /*
 router.get('/convertir', function (req, res) {
 

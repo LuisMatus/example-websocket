@@ -5,7 +5,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 //const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-	mode: 'production', // production | development | none
+	mode: 'development', // production | development | none
 	entry: __dirname+'/resources/js/bundle.js',
 
 	resolve: {

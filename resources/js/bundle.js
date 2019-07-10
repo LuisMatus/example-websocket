@@ -14,7 +14,6 @@ import VueSocketIO from 'vue-socket.io'
 Vue.use(new VueSocketIO({
 	debug: true,
 	connection: 'http://104.238.73.77:3000/',
-	//options: { path: "/my-app/" } //Optional options
 }));
 
 Vue.use(VueRouter);

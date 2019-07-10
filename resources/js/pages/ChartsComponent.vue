@@ -1,6 +1,11 @@
 <template lang="pug">
 	.secction-charts
 		v-container( grid-list-md text-xs-center)
+			v-layout(row justify-right )
+				v-flex(xs12 text-right )
+					v-radio-group( v-model="radios" row)
+						v-radio( v-for="year of years" :label="''+year"  :value="year"  color="primary")
+		v-container( grid-list-md text-xs-center)
 			v-layout( row wrap)
 				v-flex( xs12)
 					h1(class="primary--text") Charts 
@@ -12,7 +17,9 @@
 
 
 <script>
+
 	var Axios = require('axios');
+	var _ = require('lodash');
 
 	import VueApexCharts from "vue-apexcharts";
 	import ApexCharts from "apexcharts";
@@ -23,6 +30,8 @@
     	},
 		data(){
 			return {
+				years: [],
+				radios: 'radio-1',
 				options : {
 					chart: {
 						id: "chart1",
@@ -36,12 +45,28 @@
 							opacity: 1
 						},
 						toolbar: {
-							show: false
+							autoSelected: 'zoom'
+						},
+						zoom: {
+							enabled: true,
+							type: 'x',  
+							autoScaleYaxis: false,  
+							zoomedArea: {
+								fill: {
+								color: '#90CAF9',
+								opacity: 0.4
+								},
+								stroke: {
+								color: '#0D47A1',
+								opacity: 0.4,
+								width: 1
+								}
+							}
 						}
 					},
-					colors: ['#77B6EA', '#545454'],
+					colors: ['#545454','#77B6EA'],
 					dataLabels: {
-						enabled: true,
+						enabled: false,
 					},
 					stroke: {
 						curve: 'smooth'
@@ -60,21 +85,29 @@
 					},
 					markers: {
 						
-						size: 6
+						size: 1
 					},
 					xaxis: {
 						categories: [],
+						type: 'datetime',
 						
 						title: {
-							text: 'Día'
+							text: 'Year-week'
+						},
+						labels: {
+							show: true,
+							rotate: -90,
 						}
 					},
 					yaxis: {
 						title: {
-							text: 'MXN'
+							text: 'Price'
+						},labels: {
+							formatter: function (val) {
+								let	num= parseInt(val);
+								return  '$ '+num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+							},
 						},
-						//min: 5,
-						//max: 40
 					},
 					legend: {
 						position: 'top',
@@ -85,11 +118,11 @@
 					}
 				},
 				series: [{
-							name: "Suma de Costo ",
+							name: "Costo ",
 							data: []
 						},
 						{
-							name: "Suma de Precio ",
+							name: "Precio ",
 							data: []
 						}
 				]
@@ -157,7 +190,10 @@
 					// handle success
 					//this.transactions = response.data.transactions;
 					this.options.xaxis.categories = response.data.fechas;
-					
+					this.years = response.data.years;
+					//Vue.set(app.userProfile, 'years', 27)
+					//app.$forceUpdate();
+
 					this.series[0].data = response.data.costo;
 					this.series[1].data = response.data.precio;
 
