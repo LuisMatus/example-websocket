@@ -83,7 +83,7 @@ router.post('/charts/:year', async function (req, res) {
 			}
 		},
 		{ $match: { year: Number(req.params.year) } },
-		{ $sort: { _id: 1 } },
+		{ $sort: { _id: -1 } },
 		{
 			$group: {
 				_id: { $week: "$FECHA" },
@@ -91,7 +91,7 @@ router.post('/charts/:year', async function (req, res) {
 				precioTotal: { $sum: '$PRECIO' }
 			}
 		},
-		{ $sort: { _id: 1 } },
+		{ $sort: { _id: -1 } },
 	]).exec();
 
 	var serie_costo = await data_chart.map((item)=>{
