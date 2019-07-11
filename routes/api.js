@@ -49,7 +49,6 @@ router.post('/charts', async function (req, res) {
 	var years = [];
 
 	var data_years =  await transactions_newModel.aggregate([
-		{ $sort: { FECHA: -1 } },
 		{
 			$group: {
 				_id: {$year:"$FECHA"}
