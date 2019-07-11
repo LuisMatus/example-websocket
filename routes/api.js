@@ -6,7 +6,7 @@ var transactions_newModel = require("../models/Transactions_new.js");
 
 var io = require('socket.io');
 
-router.post('/get-data', function (req, res) {
+router.post('/get-data/:year', function (req, res) {
 	
 	return res.json({ 'status': "success", 'transactions': res.locals.transactions });
 });
@@ -26,21 +26,26 @@ router.put('/transactions/:id', function (req, res) {
 		doc.PRECIO = req.body.PRECIO;
 
 
-		doc.save(function () {
+		doc.save(function (err, doc) {
+			if(err){
+				req.app.io.emit('charts');
+				return res.json({ 'status': "error" });
+
+			}
+			let year=doc.FECHA.toISOString().substring(0, 4);
+			req.app.io.emit('charts',year);
+			return res.json({ 'status': "success" });
 
 		});
 
 	});
-	req.app.io.emit('charts');
-	return res.json({ 'status': "success" });
+	
 
 });
 
 router.post('/charts', async function (req, res) {
 
-	var fechas = [];
-	var costo = [];
-	var precio = [];
+;
 	var years = [];
 
 	var data_years =  await transactions_newModel.aggregate([
@@ -52,16 +57,36 @@ router.post('/charts', async function (req, res) {
 		},
 	]).exec();
 
-	years = await data_years.map((item) => { return item._id } );
+	years = await data_years.map((item) => { 
+		return item._id 
+	} );
+	let json_response = {
+		'years': years
+	}
+
+	return res.json(json_response);
+});
+
+router.post('/charts/:year', async function (req, res) {
+
+	var fechas = [];
+	var precio = [];
+
 	var data_chart = await transactions_newModel.aggregate([
-		{ $project: { _id: 0 } },
-		{ $sort: { FECHA: 1 } },
+		{
+			$project: {
+				year: { $year: "$FECHA" },
+				FECHA: '$FECHA',
+				COSTO: '$COSTO',
+				PRECIO: '$PRECIO',
+				count: { $sum: 1 },
+			}
+		},
+		{ $match: { year: Number(req.params.year) } },
+		{ $sort: { _id: 1 } },
 		{
 			$group: {
-				_id: {
-					year: { $year: "$FECHA" },
-					week: { $week: "$FECHA" }
-				},
+				_id: { $week: "$FECHA" },
 				costoTotal: { $sum: '$COSTO' },
 				precioTotal: { $sum: '$PRECIO' }
 			}
@@ -71,22 +96,21 @@ router.post('/charts', async function (req, res) {
 
 	var serie_costo = await data_chart.map((item)=>{
 		fechas.push(item._id);
-		//fechas.push(item._id.toISOString().substring(0, 10));
 		precio.push(item.precioTotal);
 		return item.costoTotal;
 	});
+
 	let json_response = { 
 		'status': "success", 
 		'fechas': fechas, 
 		'costo': serie_costo, 
 		'precio': precio,
-		'years': years
 	}
-
 	return res.json(json_response);
 });
 
-router.get('/charts-week', async function (req, res) {
+/*
+router.post('/charts-week', async function (req, res) {
 	var data_chart = await transactions_newModel.aggregate([
 		{ $project: { _id: 0 } }, 
 		{ $sort: { FECHA: 1 } }, 
@@ -106,9 +130,7 @@ router.get('/charts-week', async function (req, res) {
 	res.send(data_chart);
 });	
 
-
-/*
-router.get('/convertir', function (req, res) {
+router.post('/convertir', function (req, res) {
 
 	transactionsModel.
 		find({}).

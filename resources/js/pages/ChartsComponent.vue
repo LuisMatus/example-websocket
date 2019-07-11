@@ -12,14 +12,17 @@
 					//div#chart
 				v-flex( xs12 md10 mx-auto)
 					apexchart( type='line' width="100%" :options="options" :series="series" )
+		
+		table-data-component(v-bind:year="radios" v-bind:refreshChild="refreshChild")
+		
 </template>
 
 
 
 <script>
+	import tableData  from  './tableDataComponent.vue'
 
 	var Axios = require('axios');
-	var _ = require('lodash');
 
 	import VueApexCharts from "vue-apexcharts";
 	import ApexCharts from "apexcharts";
@@ -27,11 +30,12 @@
 	export default {
 		components: {
        		apexchart: VueApexCharts,
+			'table-data-component':tableData
     	},
 		data(){
 			return {
 				years: [],
-				radios: 'radio-1',
+				radios: 2000,
 				options : {
 					chart: {
 						id: "chart1",
@@ -45,23 +49,7 @@
 							opacity: 1
 						},
 						toolbar: {
-							autoSelected: 'zoom'
-						},
-						zoom: {
-							enabled: true,
-							type: 'x',  
-							autoScaleYaxis: false,  
-							zoomedArea: {
-								fill: {
-								color: '#90CAF9',
-								opacity: 0.4
-								},
-								stroke: {
-								color: '#0D47A1',
-								opacity: 0.4,
-								width: 1
-								}
-							}
+							show: false
 						}
 					},
 					colors: ['#545454','#77B6EA'],
@@ -84,24 +72,23 @@
 						},
 					},
 					markers: {
-						
-						size: 1
+						size: 3
 					},
 					xaxis: {
 						categories: [],
-						type: 'datetime',
+						type: 'categories',
 						
 						title: {
-							text: 'Year-week'
+							text: ''
 						},
 						labels: {
 							show: true,
-							rotate: -90,
+							rotate: -30,
 						}
 					},
 					yaxis: {
 						title: {
-							text: 'Price'
+							text: 'Costo - Precio'
 						},labels: {
 							formatter: function (val) {
 								let	num= parseInt(val);
@@ -118,22 +105,28 @@
 					}
 				},
 				series: [{
-							name: "Costo ",
+							name: "Costo",
 							data: []
 						},
 						{
-							name: "Precio ",
+							name: "Precio",
 							data: []
 						}
-				]
+				],
+				refreshChild : true,
 			}
 		},
 		sockets:{
 			connection: function(){
 				console.log('socket connected')
 			},
-			charts: function(){
-				this.updateChart();
+			charts: function(year){
+				console.log('received by server'+ year);
+				if(this.radios == year){
+					this.fetchPerYear(year);
+					this.refreshChild = !this.refreshChild;
+					
+				}
 			}
 		},
 		mounted() {
@@ -142,65 +135,45 @@
 		watch: {
 			dialog (val) {
 				val || this.close()
+			},
+			radios(year){
+				console.log('change  year radios: '+year);
+				this.fetchPerYear(year);
 			}
 		},
 		methods: { 
-
-			async updateChart(){
-				Axios.post('/api/v1/charts')
-				.then( (response)=>{
-
-					this.options.xaxis.categories = response.data.fechas;
-					
-					this.series[0].data = response.data.costo;
-					this.series[1].data = response.data.precio;
-
-				
-					ApexCharts.exec("chart1", "updateOptions", {
-						xaxis: {
-							categories: this.options.xaxis.categories 
-						}
-					});
-
-					ApexCharts.exec("chart1", "updateSeries", [
-						{
-							data: this.series[0].data
-						},
-						{
-							data: this.series[2].data
-						}
-
-					]);
-					
-
-				})
-				.catch(function (error) {
-					// handle error
-					//console.log(error);
-				})
-				.then(function () {
-					// always executed
-				});
-
-			},
-
 			fetchData(){
 				Axios.post('/api/v1/charts')
 				.then( (response)=>{
 					// handle success
-					//this.transactions = response.data.transactions;
-					this.options.xaxis.categories = response.data.fechas;
 					this.years = response.data.years;
-					//Vue.set(app.userProfile, 'years', 27)
-					//app.$forceUpdate();
+					this.radios = this.years[this.years.length - 1];
+					
+				})
+				.catch(function (error) {
+					// handle error
+					console.log(error);
+				})
+				.then(function () {
+					// always executed
+				});
+			},
+			fetchPerYear(year){
+				Axios.post('/api/v1/charts/'+year)
+				.then( (response)=>{
+					
+					if(response.data.status!='success') return;
 
+					this.options.xaxis.categories = response.data.fechas;
 					this.series[0].data = response.data.costo;
 					this.series[1].data = response.data.precio;
 
-				
 					ApexCharts.exec("chart1", "updateOptions", {
 						xaxis: {
-							categories: this.options.xaxis.categories 
+							categories: this.options.xaxis.categories,
+							title:{
+								text:'weeks -' +year
+							}
 						}
 					});
 
@@ -209,19 +182,21 @@
 							data: this.series[0].data
 						},
 						{
-							data: this.series[2].data
+							data: this.series[1].data
 						}
 
 					]);
 				})
 				.catch(function (error) {
 					// handle error
-					//console.log(error);
+					console.log(error);
 				})
 				.then(function () {
 					// always executed
 				});
-			},
+
+			}
+			
 
 		}
 		

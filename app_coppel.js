@@ -30,7 +30,7 @@ app.get('/', function (req, res) {
 	res.render('general/home');
 });
 // route API
-app.use('/api/v1', middleware_routes);
+app.use('/api/v1/get-data/:year', middleware_routes);
 app.use('/api/v1', api_routes);
 
 

@@ -61,10 +61,12 @@
 
 <script>
 	var Axios = require('axios');
-	
-
-
 	export default {
+		props:{
+			year: {type: Number},
+			refreshChild: {type:Boolean}
+
+		},
 		data(){
 			return {
 				dialog: false,
@@ -100,7 +102,7 @@
 					FECHA:	'',
 				},
 				transactions :[],
-				rowsPerPage: [50, 500,1000],
+				rowsPerPage: [20, 100, 300, 500,1000],
 				//matus
 			}
 
@@ -112,28 +114,30 @@
 		},
 		created () {
 
-			this.fetchData();
 		},
 
 		watch: {
 			dialog (val) {
 				val || this.close()
+			},
+			year(val){
+				this.fetchDataTable(val);
+			},
+			refreshChild(){
+				this.fetchDataTable(this.year);
+
 			}
 		},
 
 		methods: {
 
-			fetchData(){
-				Axios.post('/api/v1/get-data')
+			fetchDataTable(year){
+				Axios.post('/api/v1/get-data/'+year)
 				.then( (response)=>{
-					// handle success
 					this.transactions = response.data.transactions;
-					//console.log(response.data);
-					//this.reInit();
 				})
 				.catch(function (error) {
 					// handle error
-					//console.log(error);
 				})
 				.then(function () {
 					// always executed
@@ -154,6 +158,8 @@
 				});
 			},
 			showData (item) {
+				console.log(item);
+				console.log(this.transactions.indexOf(item));
 				this.editedIndex = this.transactions.indexOf(item)
 				this.editedItem = Object.assign({}, item)
 				this.dialog = true

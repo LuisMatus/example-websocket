@@ -13,7 +13,8 @@ import VueSocketIO from 'vue-socket.io'
 
 Vue.use(new VueSocketIO({
 	debug: true,
-	connection: 'http://104.238.73.77:3000/',
+	connection: 'http://104.238.73.77:3000/', 
+	//connection: 'http://localhost:3000/',
 }));
 
 Vue.use(VueRouter);
@@ -24,8 +25,6 @@ Vue.use(Vuetify);
 import Headercomponent from './components/HeaderComponent.vue';
 import FooterComponent from './components/FooterComponent.vue';
 
-
-import HomeComponent from './pages/HomeComponent.vue';
 import ChartsComponent from './pages/ChartsComponent.vue'
 
 // 3. Create the router instance and pass the `routes` option
@@ -48,7 +47,6 @@ const app = new Vue({
 	components: {
 		'header-component': Headercomponent,
 		'footer-component': FooterComponent,
-		'home-component': HomeComponent,
 		'charts-component': ChartsComponent
 	}
 });
